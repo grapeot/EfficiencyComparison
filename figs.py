@@ -3,7 +3,7 @@ import matplotlib.pyplot as pp
 import matplotlib as ml
 
 # For the quantitative results figure.
-acc1 = np.asarray([2886, 968, 202, 1294, 1564, 11554, 6081, 6078, 114]) / 1000.0;
+acc1 = np.asarray([2886, 968, 125, 1294, 1564, 11554, 6081, 6078, 105]) / 1000.0;
 acc1_str = [str(x) for x in acc1]
 
 def autolabel(rects, name):

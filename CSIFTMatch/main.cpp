@@ -33,30 +33,52 @@ int main()
 	double **sift1 = InitMatrix();
 	double **sift2 = InitMatrix();
 	clock_t t = clock();
+	// transfer to float*
+	float *s1 = new float[1000 * 128];
+	float *s2 = new float[1000 * 128];
 
-	// match 
-	int matches[1000] = {0};
-	for (int i = 0; i < 1000; i++)
+	for (int ii = 0; ii < 1; ii++)
 	{
-		int minI = 0;
-		double minValue = 10000000;
-		for (int j = 0; j < 1000; j++)
+		for (int i = 0; i < 1000; i++)
 		{
-			double dist = 0.0;
-			for (int k = 0; k < 128; k++)
+			for (int j = 0; j < 128; j++)
 			{
-				double tmp = sift1[i][k] - sift2[j][k];
-				dist += tmp * tmp;
-			}
-			if (dist < minValue)
-			{
-				minValue = dist;
-				minI = j;
+				s1[i * 128 + j] = (float)sift1[i][j];
+				s2[i * 128 + j] = (float)sift2[i][j];
 			}
 		}
-		matches[i] = minI;
+
+		// match 
+		int matches[1000] = {0};
+		float *ss1 = s1;
+		for (int i = 0; i < 1000; i++, ss1 += 128)
+		{
+			int minI = 0;
+			float *ss2 = s2;
+			float minValue = 10000000;
+			for (int j = 0; j < 1000; j++)
+			{
+				float dist = 0.0;
+				for (int k = 0; k < 128; k++, ss2++)
+				{
+					float tmp = ss1[k] - *ss2;
+					dist += tmp * tmp;
+				}
+				if (dist < minValue)
+				{
+					minValue = dist;
+					minI = j;
+				}
+			}
+			matches[i] = minI;
+		}
 	}
 	cout << "Costs " << clock() - t << "ms." << endl;
-	
+
+	delete[] s1;
+	delete[] s2;
+	DestroyMatrix(sift1);
+	DestroyMatrix(sift2);
+
 	return 0;
 }
